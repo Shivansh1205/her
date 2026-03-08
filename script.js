@@ -467,11 +467,6 @@
       pdfBtn.textContent = '📄 Download Signed Contract (PDF)';
       saveBtns.appendChild(pdfBtn);
 
-      const screenshotBtn = document.createElement('button');
-      screenshotBtn.className = 'save-btn screenshot-btn';
-      screenshotBtn.textContent = '📸 Screenshot for Memories';
-      saveBtns.appendChild(screenshotBtn);
-
       saveSection.appendChild(saveBtns);
       acceptedEl.after(saveSection);
 
@@ -481,11 +476,6 @@
       // --- PDF Download ---
       pdfBtn.addEventListener('click', () => {
         generateContractPDF(scene, signatureDataUrl);
-      });
-
-      // --- Screenshot ---
-      screenshotBtn.addEventListener('click', () => {
-        captureContractScreenshot();
       });
 
       // Restore title for future scenes
@@ -605,25 +595,6 @@
       doc.save('relationship-agreement.pdf');
     }
 
-    /**
-     * Capture the contract card as a screenshot image download.
-     */
-    function captureContractScreenshot() {
-      if (typeof html2canvas === 'undefined') {
-        alert('Screenshot library not loaded. Please check your internet connection.');
-        return;
-      }
-      html2canvas(storyCard, {
-        backgroundColor: '#fdf6e3',
-        scale: 2,
-        useCORS: true
-      }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'relationship-agreement.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      });
-    }
   }
 
   /**
