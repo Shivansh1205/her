@@ -1,0 +1,112 @@
+{
+  "scenes": {
+    "scene1": {
+      "text": "One day, a boy decided to send a simple text to a girl.",
+      "typewriter": true,
+      "buttons": [
+        {
+          "label": "Send the message 💌",
+          "nextScene": "scene2"
+        },
+        {
+          "label": "Overthink and not send it 😰",
+          "nextScene": "overthink",
+          "bounce": true
+        }
+      ]
+    },
+    "overthink": {
+      "text": "That message changed everything. Good thing he sent it.",
+      "typewriter": true,
+      "buttons": [
+        {
+          "label": "Continue ➜",
+          "nextScene": "scene2"
+        }
+      ]
+    },
+    "scene2": {
+      "text": "They started talking. One conversation turned into many.",
+      "typewriter": true,
+      "buttons": [
+        {
+          "label": "Talk for hours 🌙",
+          "nextScene": "scene3"
+        },
+        {
+          "label": "Keep conversations short 💬",
+          "nextScene": "scene3",
+          "bounce": true
+        }
+      ]
+    },
+    "scene3": {
+      "text": "Days turned into weeks. Talking to her became the best part of his day.",
+      "typewriter": true,
+      "buttons": [
+        {
+          "label": "Wait and see where it goes ⏳",
+          "nextScene": "scene4",
+          "bounce": true
+        },
+        {
+          "label": "Realize something special is happening ✨",
+          "nextScene": "scene4"
+        }
+      ]
+    },
+    "scene4": {
+      "text": "After a month of talking, the boy realized something.",
+      "typewriter": true,
+      "revealText": "He had caught feelings for her.",
+      "buttons": [
+        {
+          "label": "Continue ➜",
+          "nextScene": "final"
+        }
+      ]
+    },
+    "final": {
+      "type": "terms",
+      "lines": [
+        "Before I ask you something important,\nthere are a few terms and conditions.",
+        "Do you agree to always disturb me for no reason?",
+        "Do you agree to spam me with random texts when you're bored?",
+        "Do you agree to accept my flaws, my weird habits, and my bad jokes?",
+        "Do you agree to listen to my stupid stories again and again?",
+        "Do you agree to be the reason I smile every day?",
+        "Do you agree to let me be the reason you smile too?",
+        "And finally...",
+        "Do you agree to be my girlfriend?"
+      ],
+      "buttons": [
+        {
+          "label": "YES ❤️",
+          "nextScene": "tease"
+        },
+        {
+          "label": "OBVIOUSLY YES ❤️",
+          "nextScene": "tease"
+        }
+      ]
+    },
+    "tease": {
+      "text": "just yes?? no excitement?? 🥺",
+      "typewriter": true,
+      "buttons": [
+        {
+          "label": "YESSSS!! 🎉💖🥹",
+          "nextScene": "celebration"
+        },
+        {
+          "label": "A THOUSAND TIMES YES!! 💕💕💕",
+          "nextScene": "celebration"
+        }
+      ]
+    },
+    "celebration": {
+      "type": "celebration",
+      "text": "You just made me the happiest guy alive. 🥹💖"
+    }
+  }
+}

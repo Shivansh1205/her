@@ -1,0 +1,447 @@
+/* ============================================================
+   HOW I FELL FOR YOU — Romantic Interactive Website
+   Styles & Animations
+   ============================================================ */
+
+/* ---------- Google Fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap');
+
+/* ---------- CSS Custom Properties ---------- */
+:root {
+  --pink-light: #ffe0e6;
+  --pink: #ff6b8a;
+  --pink-dark: #e84a6f;
+  --purple-light: #e8d5f5;
+  --purple: #c9a0dc;
+  --purple-dark: #a855f7;
+  --rose: #ff8fa3;
+  --white: #ffffff;
+  --off-white: #fff5f7;
+  --text-dark: #4a2040;
+  --text-medium: #6b3a5e;
+  --text-light: #9b6b8a;
+
+  --gradient-bg: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 30%, #e8d5f5 60%, #fce4ec 100%);
+  --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.85) 0%, rgba(252,228,236,0.75) 100%);
+  --gradient-btn: linear-gradient(135deg, var(--pink) 0%, var(--purple-dark) 100%);
+  --gradient-btn-hover: linear-gradient(135deg, var(--pink-dark) 0%, #9333ea 100%);
+
+  --shadow-card: 0 20px 60px rgba(168, 85, 247, 0.15), 0 8px 24px rgba(255, 107, 138, 0.1);
+  --shadow-btn: 0 4px 15px rgba(255, 107, 138, 0.4);
+  --shadow-btn-hover: 0 6px 25px rgba(168, 85, 247, 0.5);
+
+  --radius-card: 24px;
+  --radius-btn: 50px;
+
+  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--gradient-bg);
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: var(--text-dark);
+  position: relative;
+}
+
+/* ---------- Floating Hearts Background ---------- */
+.hearts-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.floating-heart {
+  position: absolute;
+  bottom: -40px;
+  font-size: 1.4rem;
+  opacity: 0;
+  animation: floatHeart var(--duration, 8s) var(--delay, 0s) ease-in infinite;
+}
+
+@keyframes floatHeart {
+  0% {
+    opacity: 0;
+    transform: translateY(0) rotate(0deg) scale(0.5);
+  }
+  10% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateY(-50vh) rotate(180deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-110vh) rotate(360deg) scale(0.3);
+  }
+}
+
+/* ---------- Main Story Card ---------- */
+.story-card {
+  position: relative;
+  z-index: 10;
+  background: var(--gradient-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 3rem 2.5rem;
+  max-width: 520px;
+  width: 90%;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: opacity var(--transition-smooth), transform var(--transition-smooth);
+}
+
+/* Fade transition states */
+.story-card.fade-out {
+  opacity: 0;
+  transform: scale(0.96) translateY(10px);
+}
+
+.story-card.fade-in {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* ---------- Title ---------- */
+.story-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--pink-dark);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+  opacity: 0;
+  animation: fadeSlideIn 1s 0.3s ease forwards;
+}
+
+.story-title .heart-icon {
+  display: inline-block;
+  animation: heartPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* ---------- Story Text ---------- */
+.story-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.8;
+  color: var(--text-dark);
+  margin: 1.5rem 0;
+  min-height: 3rem;
+}
+
+/* Typewriter cursor */
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background-color: var(--pink);
+  margin-left: 3px;
+  vertical-align: text-bottom;
+  animation: blink 0.7s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Reveal text (for Scene 4 special line) */
+.reveal-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--purple-dark);
+  margin-top: 1rem;
+  min-height: 2rem;
+}
+
+/* ---------- Buttons ---------- */
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: 100%;
+  margin-top: 1.8rem;
+}
+
+.story-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--white);
+  background: var(--gradient-btn);
+  border: none;
+  border-radius: var(--radius-btn);
+  padding: 0.85rem 2rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  transition: all var(--transition-bounce);
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.story-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.story-btn:hover::before {
+  left: 100%;
+}
+
+.story-btn:hover {
+  background: var(--gradient-btn-hover);
+  box-shadow: var(--shadow-btn-hover);
+  transform: translateY(-3px) scale(1.03);
+}
+
+.story-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Runaway button — moves away from cursor on hover */
+.story-btn.bounce {
+  position: relative;
+  transition: left 0.3s ease, top 0.3s ease, opacity 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
+  left: 0;
+  top: 0;
+}
+
+/* ---------- Final Scene ---------- */
+.final-lines {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-style: italic;
+  line-height: 2.2;
+  color: var(--text-dark);
+  margin: 1rem 0;
+}
+
+.final-lines .line {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.final-lines .line.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.final-lines .proposal-line {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--pink-dark);
+  margin-top: 0.8rem;
+}
+
+.proposal-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--pink-dark);
+  margin: 1.2rem 0;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.8s ease, transform var(--transition-bounce);
+}
+
+.proposal-text.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ---------- Celebration Scene ---------- */
+.celebration-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--pink-dark);
+  line-height: 1.8;
+  animation: celebrationPulse 2s ease-in-out infinite;
+}
+
+@keyframes celebrationPulse {
+  0%, 100% { transform: scale(1); text-shadow: 0 0 10px rgba(255,107,138,0.3); }
+  50% { transform: scale(1.04); text-shadow: 0 0 25px rgba(168,85,247,0.4); }
+}
+
+/* ---------- Music Toggle ---------- */
+.music-toggle {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 100;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background: var(--gradient-card);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+  cursor: pointer;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-smooth);
+}
+
+.music-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35);
+}
+
+.music-toggle.playing {
+  border-color: var(--pink);
+  animation: musicPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,138,0.3); }
+  50% { box-shadow: 0 0 0 10px rgba(255,107,138,0); }
+}
+
+/* ---------- Confetti Canvas ---------- */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* ---------- Utility Animations ---------- */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  body {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 10vh;
+  }
+
+  .story-card {
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+    min-height: 280px;
+    border-radius: 18px;
+  }
+
+  .story-title {
+    font-size: 1.3rem;
+  }
+
+  .story-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .reveal-text {
+    font-size: 1.15rem;
+  }
+
+  .story-btn {
+    font-size: 0.9rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .final-lines {
+    font-size: 1.05rem;
+  }
+
+  .proposal-text {
+    font-size: 1.3rem;
+  }
+
+  .celebration-text {
+    font-size: 1.25rem;
+  }
+
+  .music-toggle {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .story-card {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .story-text {
+    font-size: 0.95rem;
+  }
+
+  .story-btn {
+    font-size: 0.85rem;
+    padding: 0.65rem 1.2rem;
+  }
+}
