@@ -91,10 +91,15 @@
       revealTextEl.textContent = '';
       revealTextEl.innerHTML = '';
       buttonsEl.innerHTML = '';
+      // Remove any leftover dynamic elements
+      storyCard.querySelectorAll('.final-lines, .proposal-text, .celebration-text, .contract-content').forEach(el => el.remove());
+      storyCard.classList.remove('contract-mode');
 
       // Delegate to the right renderer
       if (currentScene.type === 'terms') {
         renderTerms(currentScene);
+      } else if (currentScene.type === 'contract') {
+        renderContract(currentScene);
       } else if (currentScene.type === 'finale') {
         renderFinale(currentScene);
       } else if (currentScene.type === 'celebration') {
@@ -238,6 +243,408 @@
     }
 
     typeNextLine();
+  }
+
+  /* ==========================================================
+     CONTRACT SCENE — Parchment Signature Pad
+     ========================================================== */
+
+  /**
+   * Render the parchment-style Relationship Agreement.
+   */
+  function renderContract(scene) {
+    startCelebrationHearts();
+    storyCard.classList.add('contract-mode');
+    storyTextEl.textContent = '';
+
+    // Hide the title for this scene
+    const titleEl = storyCard.querySelector('.story-title');
+    if (titleEl) titleEl.style.display = 'none';
+
+    // Build contract DOM
+    const contractEl = document.createElement('div');
+    contractEl.className = 'contract-content';
+
+    // Header
+    const header = document.createElement('h2');
+    header.className = 'contract-header';
+    header.textContent = scene.title || 'Relationship Agreement';
+    contractEl.appendChild(header);
+
+    // Decorative divider
+    const divider = document.createElement('hr');
+    divider.className = 'contract-divider';
+    contractEl.appendChild(divider);
+
+    // Intro text
+    const intro = document.createElement('p');
+    intro.className = 'contract-intro';
+    intro.textContent = scene.intro;
+    contractEl.appendChild(intro);
+
+    // Clauses list
+    const clauseList = document.createElement('ol');
+    clauseList.className = 'contract-clauses';
+    scene.clauses.forEach((clause) => {
+      const li = document.createElement('li');
+      li.textContent = clause;
+      clauseList.appendChild(li);
+    });
+    contractEl.appendChild(clauseList);
+
+    // Divider 2
+    const divider2 = document.createElement('hr');
+    divider2.className = 'contract-divider';
+    contractEl.appendChild(divider2);
+
+    // Closing text containers
+    const closingEl = document.createElement('p');
+    closingEl.className = 'contract-closing';
+    contractEl.appendChild(closingEl);
+
+    const closingFinalEl = document.createElement('p');
+    closingFinalEl.className = 'contract-closing-final';
+    contractEl.appendChild(closingFinalEl);
+
+    // Signature section (hidden initially)
+    const sigSection = document.createElement('div');
+    sigSection.className = 'signature-section';
+    sigSection.style.display = 'none';
+
+    const sigLabel = document.createElement('p');
+    sigLabel.className = 'signature-label';
+    sigLabel.textContent = 'Signature';
+    sigSection.appendChild(sigLabel);
+
+    const sigCanvas = document.createElement('canvas');
+    sigCanvas.className = 'signature-canvas';
+    sigCanvas.width = 340;
+    sigCanvas.height = 120;
+    sigSection.appendChild(sigCanvas);
+
+    const btnRow = document.createElement('div');
+    btnRow.className = 'contract-buttons';
+
+    const clearBtn = document.createElement('button');
+    clearBtn.className = 'contract-btn clear-btn';
+    clearBtn.textContent = 'Clear Signature';
+    btnRow.appendChild(clearBtn);
+
+    const signBtn = document.createElement('button');
+    signBtn.className = 'contract-btn sign-btn';
+    signBtn.textContent = '✍️ Sign Contract';
+    btnRow.appendChild(signBtn);
+
+    sigSection.appendChild(btnRow);
+    contractEl.appendChild(sigSection);
+
+    // Insert into card
+    storyTextEl.after(contractEl);
+
+    // --- Animate clauses in one by one ---
+    const clauseEls = clauseList.querySelectorAll('li');
+    clauseEls.forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), (i + 1) * 500);
+    });
+
+    // --- After clauses, typewriter the closing lines ---
+    const clauseDelay = (clauseEls.length + 1) * 500 + 400;
+
+    setTimeout(() => {
+      typewriterIntoElement(scene.closingLines[0], closingEl, () => {
+        setTimeout(() => {
+          typewriterIntoElement(scene.closingLines[1], closingFinalEl, () => {
+            // Show signature section
+            sigSection.style.display = 'block';
+            sigSection.style.opacity = '0';
+            sigSection.style.transition = 'opacity 0.6s ease';
+            setTimeout(() => { sigSection.style.opacity = '1'; }, 50);
+          });
+        }, 600);
+      });
+    }, clauseDelay);
+
+    // --- Signature Pad Logic ---
+    const sigCtx = sigCanvas.getContext('2d');
+    let isDrawing = false;
+    let hasSigned = false;
+
+    function getPos(e) {
+      const rect = sigCanvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) * (sigCanvas.width / rect.width),
+        y: (clientY - rect.top) * (sigCanvas.height / rect.height)
+      };
+    }
+
+    function startDraw(e) {
+      e.preventDefault();
+      isDrawing = true;
+      hasSigned = true;
+      const pos = getPos(e);
+      sigCtx.beginPath();
+      sigCtx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      sigCtx.lineWidth = 2.5;
+      sigCtx.lineCap = 'round';
+      sigCtx.strokeStyle = '#2c1810';
+      sigCtx.lineTo(pos.x, pos.y);
+      sigCtx.stroke();
+    }
+
+    function stopDraw() { isDrawing = false; }
+
+    // Mouse events
+    sigCanvas.addEventListener('mousedown', startDraw);
+    sigCanvas.addEventListener('mousemove', draw);
+    sigCanvas.addEventListener('mouseup', stopDraw);
+    sigCanvas.addEventListener('mouseleave', stopDraw);
+    // Touch events
+    sigCanvas.addEventListener('touchstart', startDraw);
+    sigCanvas.addEventListener('touchmove', draw);
+    sigCanvas.addEventListener('touchend', stopDraw);
+
+    // Clear button
+    clearBtn.addEventListener('click', () => {
+      sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      hasSigned = false;
+    });
+
+    // Sign button
+    signBtn.addEventListener('click', () => {
+      if (!hasSigned) {
+        signBtn.textContent = 'Please sign first! ✍️';
+        setTimeout(() => { signBtn.textContent = '✍️ Sign Contract'; }, 1500);
+        return;
+      }
+
+      // Save signature as image data before hiding
+      const signatureDataUrl = sigCanvas.toDataURL('image/png');
+
+      // Hide signature controls, show celebration
+      sigSection.style.display = 'none';
+      closingEl.style.display = 'none';
+      closingFinalEl.style.display = 'none';
+
+      // Show accepted message
+      const acceptedEl = document.createElement('p');
+      acceptedEl.className = 'contract-accepted';
+      const celebLines = scene.celebrationText.split('\n');
+      celebLines.forEach((line, i) => {
+        if (i > 0) acceptedEl.appendChild(document.createElement('br'));
+        acceptedEl.appendChild(document.createTextNode(line));
+      });
+      divider2.after(acceptedEl);
+
+      startConfetti();
+
+      // --- Build Save Section ---
+      const saveSection = document.createElement('div');
+      saveSection.className = 'save-section';
+
+      const saveTitle = document.createElement('p');
+      saveTitle.className = 'save-section-title';
+      saveTitle.textContent = 'Save Your Signed Contract';
+      saveSection.appendChild(saveTitle);
+
+      const saveText = document.createElement('p');
+      saveText.className = 'save-section-text';
+      saveText.innerHTML = 'This agreement is now officially valid.<br>You may save a copy of this contract as proof.';
+      saveSection.appendChild(saveText);
+
+      const saveBtns = document.createElement('div');
+      saveBtns.className = 'save-buttons';
+
+      const pdfBtn = document.createElement('button');
+      pdfBtn.className = 'save-btn pdf-btn';
+      pdfBtn.textContent = '📄 Download Signed Contract (PDF)';
+      saveBtns.appendChild(pdfBtn);
+
+      const screenshotBtn = document.createElement('button');
+      screenshotBtn.className = 'save-btn screenshot-btn';
+      screenshotBtn.textContent = '📸 Screenshot for Memories';
+      saveBtns.appendChild(screenshotBtn);
+
+      saveSection.appendChild(saveBtns);
+      acceptedEl.after(saveSection);
+
+      // Fade in save section
+      setTimeout(() => saveSection.classList.add('visible'), 600);
+
+      // --- PDF Download ---
+      pdfBtn.addEventListener('click', () => {
+        generateContractPDF(scene, signatureDataUrl);
+      });
+
+      // --- Screenshot ---
+      screenshotBtn.addEventListener('click', () => {
+        captureContractScreenshot();
+      });
+
+      // Restore title for future scenes
+      if (titleEl) titleEl.style.display = '';
+    });
+
+    /**
+     * Generate a beautiful PDF of the signed contract using jsPDF.
+     */
+    function generateContractPDF(scene, sigDataUrl) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+      const pageW = doc.internal.pageSize.getWidth();
+      const margin = 25;
+      const contentW = pageW - margin * 2;
+      let y = 30;
+
+      // Background tint
+      doc.setFillColor(253, 246, 227);
+      doc.rect(0, 0, pageW, doc.internal.pageSize.getHeight(), 'F');
+
+      // Decorative border
+      doc.setDrawColor(184, 134, 11);
+      doc.setLineWidth(0.8);
+      doc.rect(15, 15, pageW - 30, doc.internal.pageSize.getHeight() - 30);
+
+      // Title
+      doc.setFont('times', 'bold');
+      doc.setFontSize(26);
+      doc.setTextColor(92, 58, 30);
+      doc.text(scene.title || 'Relationship Agreement', pageW / 2, y, { align: 'center' });
+      y += 10;
+
+      // Decorative line
+      doc.setDrawColor(184, 134, 11);
+      doc.setLineWidth(0.5);
+      doc.line(margin + 20, y, pageW - margin - 20, y);
+      y += 12;
+
+      // Intro
+      doc.setFont('times', 'italic');
+      doc.setFontSize(12);
+      doc.setTextColor(107, 66, 38);
+      const introLines = doc.splitTextToSize(scene.intro, contentW);
+      doc.text(introLines, pageW / 2, y, { align: 'center' });
+      y += introLines.length * 6 + 10;
+
+      // Clauses
+      doc.setFont('times', 'normal');
+      doc.setFontSize(12);
+      doc.setTextColor(92, 58, 30);
+      scene.clauses.forEach((clause, i) => {
+        const prefix = (i + 1) + '. ';
+        doc.setFont('times', 'bold');
+        doc.text(prefix, margin, y);
+        doc.setFont('times', 'normal');
+        const clauseLines = doc.splitTextToSize(clause, contentW - 10);
+        doc.text(clauseLines, margin + 8, y);
+        y += clauseLines.length * 6 + 4;
+      });
+
+      y += 6;
+
+      // Decorative line
+      doc.setDrawColor(184, 134, 11);
+      doc.line(margin + 20, y, pageW - margin - 20, y);
+      y += 12;
+
+      // Closing lines
+      doc.setFont('times', 'italic');
+      doc.setFontSize(12);
+      doc.setTextColor(92, 58, 30);
+      scene.closingLines.forEach((line, i) => {
+        if (i === scene.closingLines.length - 1) {
+          doc.setFont('times', 'bolditalic');
+          doc.setFontSize(14);
+          doc.setTextColor(232, 74, 111);
+        }
+        const wrapped = doc.splitTextToSize(line, contentW);
+        doc.text(wrapped, pageW / 2, y, { align: 'center' });
+        y += wrapped.length * 6 + 6;
+      });
+
+      y += 8;
+
+      // Signature label
+      doc.setFont('times', 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(92, 58, 30);
+      doc.text('Signature:', margin, y);
+      y += 4;
+
+      // Signature image
+      try {
+        doc.addImage(sigDataUrl, 'PNG', margin, y, 60, 22);
+      } catch (e) {
+        console.warn('Could not add signature image to PDF.', e);
+      }
+      y += 28;
+
+      // Signature line
+      doc.setDrawColor(92, 58, 30);
+      doc.setLineWidth(0.3);
+      doc.line(margin, y, margin + 60, y);
+      y += 6;
+
+      // Footer
+      doc.setFont('times', 'italic');
+      doc.setFontSize(10);
+      doc.setTextColor(184, 134, 11);
+      doc.text('Signed with love.', pageW / 2, doc.internal.pageSize.getHeight() - 22, { align: 'center' });
+
+      // Heart decoration
+      doc.setFontSize(14);
+      doc.text('❤', pageW / 2, doc.internal.pageSize.getHeight() - 28, { align: 'center' });
+
+      doc.save('relationship-agreement.pdf');
+    }
+
+    /**
+     * Capture the contract card as a screenshot image download.
+     */
+    function captureContractScreenshot() {
+      if (typeof html2canvas === 'undefined') {
+        alert('Screenshot library not loaded. Please check your internet connection.');
+        return;
+      }
+      html2canvas(storyCard, {
+        backgroundColor: '#fdf6e3',
+        scale: 2,
+        useCORS: true
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'relationship-agreement.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  }
+
+  /**
+   * Typewriter into a specific element (used by contract scene).
+   */
+  function typewriterIntoElement(text, element, onDone) {
+    let idx = 0;
+    element.textContent = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'typewriter-cursor';
+    element.appendChild(cursor);
+
+    const timer = setInterval(() => {
+      if (idx < text.length) {
+        element.insertBefore(document.createTextNode(text[idx]), cursor);
+        idx++;
+      } else {
+        clearInterval(timer);
+        setTimeout(() => { cursor.remove(); if (onDone) onDone(); }, 300);
+      }
+    }, TYPEWRITER_SPEED);
   }
 
   /**
@@ -468,16 +875,45 @@
      ========================================================== */
 
   function setupMusicToggle() {
-    musicToggle.addEventListener('click', () => {
+    bgMusic.volume = 0.5;
+    bgMusic.load(); // Ensure the latest source is loaded
+
+    // Try to auto-play immediately
+    function tryAutoPlay() {
+      bgMusic.play().then(() => {
+        isMusicPlaying = true;
+        musicToggle.textContent = '🔇';
+        musicToggle.classList.add('playing');
+      }).catch(() => {
+        // Browser blocked autoplay — wait for any user interaction
+        document.addEventListener('click', startMusicOnInteraction, { once: true });
+        document.addEventListener('touchstart', startMusicOnInteraction, { once: true });
+      });
+    }
+
+    function startMusicOnInteraction() {
+      if (isMusicPlaying) return;
+      bgMusic.play().then(() => {
+        isMusicPlaying = true;
+        musicToggle.textContent = '🔇';
+        musicToggle.classList.add('playing');
+      }).catch(() => {});
+      // Clean up both listeners
+      document.removeEventListener('click', startMusicOnInteraction);
+      document.removeEventListener('touchstart', startMusicOnInteraction);
+    }
+
+    tryAutoPlay();
+
+    // Toggle button
+    musicToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
       if (isMusicPlaying) {
         bgMusic.pause();
         musicToggle.textContent = '🎵';
         musicToggle.classList.remove('playing');
       } else {
-        bgMusic.play().catch(() => {
-          // Music file may not exist — that's OK
-          console.info('No music file found. Add music.mp3 to enable.');
-        });
+        bgMusic.play().catch(() => {});
         musicToggle.textContent = '🔇';
         musicToggle.classList.add('playing');
       }
@@ -551,20 +987,40 @@
           ]
         },
         tease: {
-          text: "just yes?? no excitement?? 🥺",
+          text: "just yes?? no excitement?? \uD83E\uDD7A",
           typewriter: true,
           buttons: [
-            { label: "YESSSS!! 🎉💖🥹", nextScene: "celebration" },
-            { label: "A THOUSAND TIMES YES!! 💕💕💕", nextScene: "celebration" }
+            { label: "YESSSS!! \uD83C\uDF89\uD83D\uDC96\uD83E\uDD79", nextScene: "contract" },
+            { label: "A THOUSAND TIMES YES!! \uD83D\uDC95\uD83D\uDC95\uD83D\uDC95", nextScene: "contract" }
           ]
+        },
+        contract: {
+          type: "contract",
+          title: "Relationship Agreement",
+          intro: "This document certifies that the undersigned person agrees to the following terms and conditions.",
+          clauses: [
+            "To disturb Shivansh randomly throughout the day.",
+            "To send unnecessary but adorable messages.",
+            "To accept his flaws, weird habits, and terrible jokes.",
+            "To listen to the same stories again and again without complaining.",
+            "To be the reason behind his smiles.",
+            "To allow him to be the reason behind her smiles too.",
+            "To create countless beautiful memories together."
+          ],
+          closingLines: [
+            "By signing this agreement, you officially confirm one very important thing...",
+            "That you agree to be his girlfriend."
+          ],
+          celebrationText: "Contract accepted \u2764\uFE0F\nYou are now officially Shivansh's girlfriend."
         },
         celebration: {
           type: "celebration",
-          text: "You just made me the happiest guy alive. 🥹💖"
+          text: "You just made me the happiest guy alive. \uD83E\uDD79\uD83D\uDC96"
         }
       }
     };
   }
+
 
   /* ==========================================================
      BOOT

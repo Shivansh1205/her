@@ -360,6 +360,246 @@ body {
   z-index: 50;
 }
 
+/* ---------- Contract / Parchment Scene ---------- */
+.story-card.contract-mode {
+  max-width: 600px;
+  background: linear-gradient(145deg, #fdf6e3 0%, #f5e6c8 40%, #efe0b9 100%);
+  border: 2px solid #d4a574;
+  box-shadow: 0 10px 40px rgba(139, 90, 43, 0.2), inset 0 0 60px rgba(139, 90, 43, 0.05);
+  padding: 2.5rem 2rem;
+  overflow-y: auto;
+  max-height: 85vh;
+}
+
+.contract-header {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #5c3a1e;
+  margin-bottom: 0.3rem;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.contract-divider {
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #b8860b, transparent);
+  margin: 0.8rem auto;
+  border: none;
+}
+
+.contract-intro {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: #6b4226;
+  line-height: 1.7;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.contract-clauses {
+  text-align: left;
+  list-style: none;
+  counter-reset: clause;
+  margin: 1.2rem 0;
+  padding: 0;
+}
+
+.contract-clauses li {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  color: #5c3a1e;
+  line-height: 1.6;
+  padding: 0.5rem 0 0.5rem 2.2rem;
+  position: relative;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.contract-clauses li.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.contract-clauses li::before {
+  counter-increment: clause;
+  content: counter(clause) ".";
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  color: #b8860b;
+  font-size: 1rem;
+}
+
+.contract-closing {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-style: italic;
+  color: #5c3a1e;
+  text-align: center;
+  margin: 1.2rem 0 0.5rem;
+  min-height: 1.5rem;
+}
+
+.contract-closing-final {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--pink-dark);
+  text-align: center;
+  margin: 0.5rem 0 1rem;
+  min-height: 1.5rem;
+}
+
+.signature-section {
+  margin-top: 1.2rem;
+  text-align: center;
+}
+
+.signature-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #5c3a1e;
+  margin-bottom: 0.6rem;
+}
+
+.signature-canvas {
+  border: 2px dashed #b8860b;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: crosshair;
+  touch-action: none;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.contract-buttons {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.contract-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.7rem 1.8rem;
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: all var(--transition-bounce);
+  letter-spacing: 0.3px;
+}
+
+.contract-btn.clear-btn {
+  background: rgba(92, 58, 30, 0.1);
+  color: #5c3a1e;
+  border: 1px solid #b8860b;
+}
+
+.contract-btn.clear-btn:hover {
+  background: rgba(92, 58, 30, 0.2);
+}
+
+.contract-btn.sign-btn {
+  background: linear-gradient(135deg, #b8860b, #8b5a2b);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
+}
+
+.contract-btn.sign-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.5);
+}
+
+.contract-accepted {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--pink-dark);
+  line-height: 1.8;
+  text-align: center;
+  margin: 1.5rem 0;
+  animation: celebrationPulse 2s ease-in-out infinite;
+}
+
+/* ---------- Save Contract Section ---------- */
+.save-section {
+  margin-top: 1.5rem;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.save-section.visible {
+  opacity: 1;
+}
+
+.save-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5c3a1e;
+  margin-bottom: 0.4rem;
+}
+
+.save-section-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #6b4226;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.save-buttons {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.save-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.75rem 1.6rem;
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: all var(--transition-bounce);
+  letter-spacing: 0.3px;
+}
+
+.save-btn.pdf-btn {
+  background: linear-gradient(135deg, #b8860b, #8b5a2b);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
+}
+
+.save-btn.pdf-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.5);
+}
+
+.save-btn.screenshot-btn {
+  background: var(--gradient-btn);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+
+.save-btn.screenshot-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: var(--shadow-btn-hover);
+}
+
 /* ---------- Utility Animations ---------- */
 @keyframes fadeSlideIn {
   from {
@@ -428,6 +668,34 @@ body {
     font-size: 1.1rem;
     bottom: 1rem;
     right: 1rem;
+  }
+
+  .story-card.contract-mode {
+    padding: 1.5rem 1.2rem;
+    max-height: 90vh;
+  }
+
+  .contract-header {
+    font-size: 1.4rem;
+  }
+
+  .contract-clauses li {
+    font-size: 0.85rem;
+    padding-left: 1.8rem;
+  }
+
+  .signature-canvas {
+    width: 280px;
+    height: 100px;
+  }
+
+  .save-buttons {
+    flex-direction: column;
+  }
+
+  .save-btn {
+    font-size: 0.85rem;
+    padding: 0.7rem 1.2rem;
   }
 }
 

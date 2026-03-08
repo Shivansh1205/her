@@ -96,13 +96,32 @@
       "buttons": [
         {
           "label": "YESSSS!! 🎉💖🥹",
-          "nextScene": "celebration"
+          "nextScene": "contract"
         },
         {
           "label": "A THOUSAND TIMES YES!! 💕💕💕",
-          "nextScene": "celebration"
+          "nextScene": "contract"
         }
       ]
+    },
+    "contract": {
+      "type": "contract",
+      "title": "Relationship Agreement",
+      "intro": "This document certifies that the undersigned person agrees to the following terms and conditions.",
+      "clauses": [
+        "To disturb Shivansh randomly throughout the day.",
+        "To send unnecessary but adorable messages.",
+        "To accept his flaws, weird habits, and terrible jokes.",
+        "To listen to the same stories again and again without complaining.",
+        "To be the reason behind his smiles.",
+        "To allow him to be the reason behind her smiles too.",
+        "To create countless beautiful memories together."
+      ],
+      "closingLines": [
+        "By signing this agreement, you officially confirm one very important thing...",
+        "That you agree to be his girlfriend."
+      ],
+      "celebrationText": "Contract accepted ❤️\nYou are now officially Shivansh's girlfriend."
     },
     "celebration": {
       "type": "celebration",
