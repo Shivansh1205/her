@@ -729,6 +729,7 @@
 
       if (!btn.bounce) {
         button.addEventListener('click', () => {
+          startMusicIfNeeded();
           showScene(btn.nextScene);
         });
       }
@@ -874,50 +875,42 @@
      7. MUSIC TOGGLE
      ========================================================== */
 
+  /**
+   * Start music with a cinematic fade-in (called on first user interaction).
+   */
+  function startMusicIfNeeded() {
+    if (isMusicPlaying) return;
+    bgMusic.volume = 0;
+    bgMusic.muted = false;
+    bgMusic.play().then(() => {
+      isMusicPlaying = true;
+      musicToggle.textContent = '🔇';
+      musicToggle.classList.add('playing');
+      // Smooth fade-in over 2 seconds
+      let vol = 0;
+      const fadeIn = setInterval(() => {
+        vol += 0.025;
+        if (vol >= 0.5) {
+          vol = 0.5;
+          clearInterval(fadeIn);
+        }
+        bgMusic.volume = vol;
+      }, 50);
+    }).catch(() => {});
+  }
+
   function setupMusicToggle() {
-    bgMusic.volume = 0.5;
-    bgMusic.load(); // Ensure the latest source is loaded
+    bgMusic.load();
 
-    // Try to auto-play immediately
-    function tryAutoPlay() {
-      bgMusic.play().then(() => {
-        isMusicPlaying = true;
-        musicToggle.textContent = '🔇';
-        musicToggle.classList.add('playing');
-      }).catch(() => {
-        // Browser blocked autoplay — wait for any user interaction
-        document.addEventListener('click', startMusicOnInteraction, { once: true });
-        document.addEventListener('touchstart', startMusicOnInteraction, { once: true });
-      });
-    }
-
-    function startMusicOnInteraction() {
-      if (isMusicPlaying) return;
-      bgMusic.play().then(() => {
-        isMusicPlaying = true;
-        musicToggle.textContent = '🔇';
-        musicToggle.classList.add('playing');
-      }).catch(() => {});
-      // Clean up both listeners
-      document.removeEventListener('click', startMusicOnInteraction);
-      document.removeEventListener('touchstart', startMusicOnInteraction);
-    }
-
-    tryAutoPlay();
-
-    // Toggle button
-    musicToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
+    musicToggle.addEventListener('click', () => {
       if (isMusicPlaying) {
         bgMusic.pause();
         musicToggle.textContent = '🎵';
         musicToggle.classList.remove('playing');
+        isMusicPlaying = false;
       } else {
-        bgMusic.play().catch(() => {});
-        musicToggle.textContent = '🔇';
-        musicToggle.classList.add('playing');
+        startMusicIfNeeded();
       }
-      isMusicPlaying = !isMusicPlaying;
     });
   }
 
